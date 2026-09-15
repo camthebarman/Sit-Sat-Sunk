@@ -6,6 +6,8 @@ Everything is stored in the browser's `localStorage`, so the room stays arranged
 between shifts and there is nothing to log into.
 
 Open `index.html` in a browser, or serve the folder with any static file server.
+Pushes to `main` publish the site to GitHub Pages at
+<https://camthebarman.github.io/Sit-Sat-Sunk/>.
 
 ## Floor Plan
 
