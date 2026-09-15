@@ -103,6 +103,8 @@
 
 * { box-sizing: border-box; }
 
+[hidden] { display: none !important; }
+
 body {
   margin: 0;
   background: var(--bg);
@@ -304,7 +306,7 @@ p { margin: 0 0 .6em; }
   justify-content: center;
   gap: 1px;
   border: 2px solid;
-  cursor: grab;
+  cursor: pointer;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
@@ -315,6 +317,9 @@ p { margin: 0 0 .6em; }
   padding: 2px;
   overflow: hidden;
 }
+/* Fixed during service; only arrange mode hands back the grab handle. */
+.floor.arranging .table-shape { cursor: grab; }
+.floor.arranging { outline: 2px dashed var(--brand); outline-offset: -2px; }
 .table-shape:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 .table-shape.dragging { cursor: grabbing; z-index: 6; box-shadow: 0 6px 18px rgba(0,0,0,.28); }
 .table-shape.selected { box-shadow: 0 0 0 3px var(--brand); z-index: 5; }

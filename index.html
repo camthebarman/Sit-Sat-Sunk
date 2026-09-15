@@ -33,14 +33,15 @@
       <div class="panel-head">
         <div>
           <h2>Floor Plan</h2>
-          <p class="sub">Tap a table to open it. Tap it again to cycle clean → seated → dirty. Drag to rearrange.</p>
+          <p class="sub" id="floor-sub">Tap a table to open it. Tap it again to cycle clean → seated → dirty. Tables stay put during service.</p>
         </div>
         <div class="head-controls">
           <div class="layout-toggle" id="layout-toggle">
             <button class="layout-btn active" data-layout="dining">Dining Room</button>
             <button class="layout-btn" data-layout="bar">Bar</button>
           </div>
-          <button class="btn btn-ghost btn-sm" id="btn-reset-layout">Reset Positions</button>
+          <button class="btn btn-ghost btn-sm" id="btn-arrange">Arrange Tables</button>
+          <button class="btn btn-ghost btn-sm" id="btn-reset-layout" hidden>Reset Positions</button>
         </div>
       </div>
 

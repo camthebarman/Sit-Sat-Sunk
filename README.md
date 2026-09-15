@@ -14,9 +14,17 @@ Pushes to `main` publish the site to GitHub Pages at
 - **Two layouts** — toggle between **Dining Room** and **Bar**. Each starts with
   tables roughly where they sit in the real room, plus scenery (harbor windows,
   kitchen pass, bar rail) to orient yourself.
-- **Drag to arrange** — drag any table where it belongs. Positions save
-  automatically and are clamped inside the room. **Reset Positions** puts the
-  current layout back to its starting arrangement.
+- **Tables are fixed during service** — they cannot be moved by tapping,
+  dragging or swiping across them, so a busy host can only ever change a
+  table's status. Sliding a finger over a table does nothing at all; it is not
+  treated as a tap.
+- **Arrange Tables** unlocks the room when you do want to move things: the floor
+  gets a dashed border, tables take a drag handle, and taps stop changing
+  status so nothing is disturbed while you work. Positions save as you drag and
+  are clamped inside the room. **Reset Positions** appears here too, putting the
+  current layout back to its starting arrangement. **Done Arranging** locks it
+  again — and the room always starts locked, so a shift can never begin in
+  arrange mode.
 - **Status by color** — grey `clean`, blue `seated`, red `dirty`.
 - **Tap a table** to open its panel: guest count, free-text notes, and the seat
   timer. **Tap it again** to cycle clean → seated → dirty → clean. The panel's

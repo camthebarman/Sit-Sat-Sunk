@@ -3,6 +3,9 @@
 const App = (function () {
   let state = Storage.load();
   let selectedId = null;
+  // Off by default and never persisted: a shift always starts with the room
+  // locked, so a tap can only ever change a table's status.
+  let arranging = false;
 
   // Waits past these marks get coloured so a long ticket is obvious at a glance.
   const WAIT_WARN_MS = 20 * 60 * 1000;
@@ -100,6 +103,7 @@ const App = (function () {
     node.style.width = table.w + "%";
     attachDrag(node, table);
     node.addEventListener("keydown", (e) => {
+      if (arranging) return;
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleTap(table); }
     });
     return node;
@@ -189,6 +193,7 @@ const App = (function () {
       // A few pixels of slop keeps a fat-fingered tap from registering as a drag.
       if (!moved && Math.abs(dx) + Math.abs(dy) < 5) return;
       moved = true;
+      if (!arranging) return;
       node.classList.add("dragging");
       table.x = Number(clamp(originX + (dx / floorRect.width) * 100, halfW, 100 - halfW).toFixed(2));
       table.y = Number(clamp(originY + (dy / floorRect.height) * 100, halfH, 100 - halfH).toFixed(2));
@@ -200,8 +205,8 @@ const App = (function () {
       if (!dragging) return;
       dragging = false;
       node.classList.remove("dragging");
-      if (moved) persist();
-      else handleTap(table);
+      if (moved && arranging) persist();
+      else if (!moved && !arranging) handleTap(table);
     }
 
     node.addEventListener("pointerup", endDrag);
@@ -209,7 +214,7 @@ const App = (function () {
       if (!dragging) return;
       dragging = false;
       node.classList.remove("dragging");
-      if (moved) persist();
+      if (moved && arranging) persist();
     });
   }
 
@@ -258,7 +263,9 @@ const App = (function () {
     if (!table) {
       panel.appendChild(el("div", { class: "empty-state" }, [
         el("p", {}, ["No table open."]),
-        el("p", { class: "muted" }, ["Tap a table to set guests, notes and status. Drag any table to match the real room."]),
+        el("p", { class: "muted" }, [arranging
+          ? "Drag tables into place. Tap Done Arranging to lock the room and go back to service."
+          : "Tap a table to set guests, notes and status."]),
       ]));
       return;
     }
@@ -368,6 +375,7 @@ const App = (function () {
   }
 
   function seatEntryAt(entry, table, layoutId) {
+    if (arranging) setArranging(false);
     if (state.activeLayout !== layoutId) {
       state.activeLayout = layoutId;
       $all(".layout-btn").forEach((b) => b.classList.toggle("active", b.dataset.layout === layoutId));
@@ -557,6 +565,26 @@ const App = (function () {
     renderFloor();
   }
 
+  function setArranging(on) {
+    arranging = on;
+    $("#floor").classList.toggle("arranging", on);
+    $("#btn-arrange").textContent = on ? "Done Arranging" : "Arrange Tables";
+    // btn-ghost's transparent background outranks btn-primary's fill, so the
+    // active state swaps the classes rather than stacking them.
+    $("#btn-arrange").classList.toggle("btn-primary", on);
+    $("#btn-arrange").classList.toggle("btn-ghost", !on);
+    $("#btn-reset-layout").hidden = !on;
+    $("#floor-sub").textContent = on
+      ? "Drag tables to match the real room. Positions save as you go."
+      : "Tap a table to open it. Tap it again to cycle clean → seated → dirty. Tables stay put during service.";
+    if (on && selectedId) {
+      const open = findTable(selectedId);
+      selectedId = null;
+      if (open) updateTableNode(open);
+      renderTablePanel();
+    }
+  }
+
   function syncThemeButton() {
     $("#btn-theme-toggle").textContent = Theme.effective() === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
   }
@@ -572,6 +600,11 @@ const App = (function () {
       if (btn) switchLayout(btn.dataset.layout);
     });
     $all(".layout-btn").forEach((b) => b.classList.toggle("active", b.dataset.layout === state.activeLayout));
+
+    $("#btn-arrange").addEventListener("click", () => {
+      setArranging(!arranging);
+      toast(arranging ? "Drag tables to rearrange the room" : "Tables locked");
+    });
 
     $("#btn-reset-layout").addEventListener("click", () => {
       Storage.resetPositions(state, state.activeLayout);
@@ -607,6 +640,7 @@ const App = (function () {
       toast(`${name} added to the waitlist`);
     });
 
+    setArranging(false);
     renderFloor();
     renderWaitlist();
     setInterval(tick, 1000);
