@@ -20,7 +20,7 @@ const Storage = (function () {
   // w is a percentage of the floor's width; the shape class fixes the aspect
   // ratio, so tables keep their proportions at every screen size.
   function t(id, label, shape, seats, w, x, y) {
-    return { id, label, shape, seats, w, x, y, status: "clean", guests: 0, notes: "", seatedAt: null, lastTurnMs: null };
+    return { id, label, shape, seats, w, x, y, status: "clean", guests: 0, notes: "", party: null, seatedAt: null, lastTurnMs: null };
   }
 
   // Dining room: harbor-view windows across the top, booths down the left
@@ -162,6 +162,7 @@ const Storage = (function () {
       (state.layouts[layout.id] || []).forEach((table) => {
         table.status = "clean";
         table.guests = 0;
+        table.party = null;
         table.seatedAt = null;
         table.lastTurnMs = null;
       });

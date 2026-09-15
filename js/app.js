@@ -238,6 +238,7 @@ const App = (function () {
       if (table.seatedAt) table.lastTurnMs = Date.now() - table.seatedAt;
       table.seatedAt = null;
       table.guests = 0;
+      table.party = null;
     }
     // Flipping to dirty leaves the clock running — the table isn't turned
     // until it's been bussed and reset, and that wait is worth seeing.
@@ -269,6 +270,12 @@ const App = (function () {
     panel.appendChild(el("div", { class: "tp-seats" }, [
       `Seats ${table.seats} · ${layoutLabel(state.activeLayout)}`,
     ]));
+
+    if (table.party) {
+      const party = el("div", { class: "tp-party" }, [el("strong", {}, [table.party.name])]);
+      if (table.party.notes) party.appendChild(el("div", { class: "muted" }, [table.party.notes]));
+      panel.appendChild(party);
+    }
 
     const running = Boolean(table.seatedAt);
     panel.appendChild(el("div", { class: "tp-timer" }, [
@@ -342,6 +349,76 @@ const App = (function () {
     renderWaitlist();
   }
 
+  // Every clean table across both layouts, with the ones big enough for the
+  // party first and the smallest of those at the top — the host's usual choice.
+  function seatableTables(partySize) {
+    const options = [];
+    Storage.LAYOUTS.forEach((layout) => {
+      (state.layouts[layout.id] || [])
+        .filter((t) => t.status === "clean")
+        .forEach((table) => options.push({ table, layout }));
+    });
+    return options.sort((a, b) => {
+      const aFits = a.table.seats >= partySize;
+      const bFits = b.table.seats >= partySize;
+      if (aFits !== bFits) return aFits ? -1 : 1;
+      // Fitting tables: tightest fit first. Too-small tables: biggest first.
+      return aFits ? a.table.seats - b.table.seats : b.table.seats - a.table.seats;
+    });
+  }
+
+  function seatEntryAt(entry, table, layoutId) {
+    if (state.activeLayout !== layoutId) {
+      state.activeLayout = layoutId;
+      $all(".layout-btn").forEach((b) => b.classList.toggle("active", b.dataset.layout === layoutId));
+    }
+    // Set the count before the status flip so it isn't overwritten by the
+    // seat-count default setStatus applies to a table seated straight off the floor.
+    table.guests = entry.party;
+    table.party = { name: entry.name, notes: entry.notes || "" };
+    selectedId = table.id;
+    setStatus(table, "seated");
+    state.waitlist = state.waitlist.filter((w) => w.id !== entry.id);
+    persist();
+    renderFloor();
+    renderWaitlist();
+    switchTab("floor");
+    toast(`${entry.name} seated at ${table.label}`);
+  }
+
+  function promptSeat(entry) {
+    openModal(`Seat ${entry.name} — party of ${entry.party}`, (body, close) => {
+      const options = seatableTables(entry.party);
+      if (!options.length) {
+        body.appendChild(el("p", { class: "muted" }, ["No clean tables open right now."]));
+      } else {
+        body.appendChild(el("p", { class: "muted", style: "font-size:12.5px" }, [
+          "Pick a table — the ones that fit the party are listed first.",
+        ]));
+        const picker = el("div", { class: "table-picker" });
+        options.forEach(({ table, layout }) => {
+          const fits = table.seats >= entry.party;
+          picker.appendChild(el("button", {
+            class: "picker-item" + (fits ? "" : " short"),
+            type: "button",
+            onclick: () => { seatEntryAt(entry, table, layout.id); close(); },
+          }, [
+            el("span", { class: "pi-label" }, [table.label]),
+            el("span", { class: "pi-sub" }, [`${layout.label} · seats ${table.seats}`]),
+          ]));
+        });
+        body.appendChild(picker);
+      }
+      body.appendChild(el("div", { class: "form-actions" }, [
+        el("button", { class: "btn btn-ghost", onclick: close }, ["Cancel"]),
+        el("button", {
+          class: "btn",
+          onclick: () => { removeWaitEntry(entry.id); close(); toast(`Seated ${entry.name}`); },
+        }, ["Seat without a table"]),
+      ]));
+    });
+  }
+
   function waitClass(ms) {
     if (ms >= WAIT_OVER_MS) return "over";
     if (ms >= WAIT_WARN_MS) return "warn";
@@ -389,7 +466,7 @@ const App = (function () {
       el("div", { class: "wait-actions" }, [
         el("button", {
           class: "btn btn-primary btn-sm",
-          onclick: () => { removeWaitEntry(entry.id); toast(`Seated ${entry.name}`); },
+          onclick: () => promptSeat(entry),
         }, ["Seat"]),
         el("button", {
           class: "btn btn-ghost btn-sm danger",

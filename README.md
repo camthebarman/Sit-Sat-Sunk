@@ -32,15 +32,24 @@ Open `index.html` in a browser, or serve the folder with any static file server.
   automatically; only the name is required.
 - Each entry shows a **live wait timer**, which turns amber past 20 minutes and
   red past 35.
-- **Seat** removes the party from the list; **Delete** removes it without the
-  "seated" confirmation. Parties waiting, guests waiting and the longest current
-  wait are totalled at the top.
+- **Seat** opens a table picker covering both layouts, listing clean tables with
+  the ones big enough for the party first (tightest fit at the top) and too-small
+  ones dimmed but still pickable. Choosing a table seats the party there: status
+  flips to seated, the timer starts, the guest count is set from the party size,
+  and the floor plan opens on that table — switching layouts first if the table
+  is in the other room. **Seat without a table** just clears the party off the
+  list. **Delete** removes an entry outright.
+- Parties waiting, guests waiting and the longest current wait are totalled at
+  the top.
+- A party seated this way is shown by name in the table's panel, separate from
+  the table's own notes, and is cleared when the table goes back to clean.
 
 ## Clear All
 
 The **Clear All** button in the header is the end-of-shift reset. It empties the
 waitlist and hands every table on both layouts back clean, clearing guest counts
-and running timers. Table positions and table notes are left alone, so the room
+and running timers along with any seated party's details. Table positions and
+table notes are left alone, so the room
 doesn't have to be rebuilt tomorrow.
 
 ## Files

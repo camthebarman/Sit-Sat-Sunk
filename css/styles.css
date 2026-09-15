@@ -504,3 +504,40 @@ p { margin: 0 0 .6em; }
   box-shadow: var(--shadow);
   z-index: 200;
 }
+
+/* ---------- seat-from-waitlist picker ---------- */
+.table-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 8px;
+  max-height: 46vh;
+  overflow-y: auto;
+  margin: 10px 0 4px;
+}
+.picker-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  color: var(--ink);
+  font-family: inherit;
+}
+.picker-item:hover { background: var(--surface-alt); border-color: var(--brand); }
+.picker-item.short { opacity: .55; }
+.pi-label { font-size: 14px; font-weight: 700; }
+.pi-sub { font-size: 11.5px; color: var(--ink-soft); }
+
+.tp-party {
+  background: var(--surface-alt);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.tp-party .muted { font-size: 12.5px; }
