@@ -7,7 +7,11 @@ between shifts and there is nothing to log into.
 
 Open `index.html` in a browser, or serve the folder with any static file server.
 Pushes to `main` publish the site to GitHub Pages at
-<https://camthebarman.github.io/Sit-Sat-Sunk/>.
+<https://camthebarman.github.io/Sit-Sat-Sunk/>. Pages serves the `gh-pages`
+branch, and the workflow in `.github/workflows/` moves `main` onto it — so
+`gh-pages` is generated, never edited by hand. If Pages' source is ever
+switched to "GitHub Actions" in the repo settings, that workflow can be
+replaced with the `actions/deploy-pages` one the other apps use.
 
 ## Floor Plan
 
