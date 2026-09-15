@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sit Sat Sunk — Floor Plan &amp; Waitlist</title>
+<script src="js/theme.js"></script>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="brand">
+        <span class="brand-mark">🪑</span>
+        <div>
+          <h1>Sit Sat Sunk</h1>
+          <p class="tagline">Host stand — floor plan &amp; waitlist</p>
+        </div>
+      </div>
+      <nav class="tabs" id="tabs">
+        <button class="tab-btn active" data-tab="floor">Floor Plan</button>
+        <button class="tab-btn" data-tab="waitlist">Waitlist</button>
+      </nav>
+      <div class="header-actions">
+        <button class="btn btn-ghost" id="btn-theme-toggle">🌙 Dark Mode</button>
+        <button class="btn btn-ghost danger" id="btn-clear-all">Clear All</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section id="panel-floor" class="panel active">
+      <div class="panel-head">
+        <div>
+          <h2>Floor Plan</h2>
+          <p class="sub">Tap a table to open it. Tap it again to cycle clean → seated → dirty. Drag to rearrange.</p>
+        </div>
+        <div class="head-controls">
+          <div class="layout-toggle" id="layout-toggle">
+            <button class="layout-btn active" data-layout="dining">Dining Room</button>
+            <button class="layout-btn" data-layout="bar">Bar</button>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="btn-reset-layout">Reset Positions</button>
+        </div>
+      </div>
+
+      <div class="floor-stats" id="floor-stats"></div>
+
+      <div class="floor-wrap">
+        <div class="floor-scroll">
+          <div class="floor" id="floor" aria-label="Floor plan"></div>
+        </div>
+        <aside class="table-panel" id="table-panel"></aside>
+      </div>
+
+      <div class="legend">
+        <span class="legend-item"><span class="swatch st-clean"></span> Clean</span>
+        <span class="legend-item"><span class="swatch st-seated"></span> Seated</span>
+        <span class="legend-item"><span class="swatch st-dirty"></span> Dirty</span>
+        <span class="legend-item muted">Positions save automatically.</span>
+      </div>
+    </section>
+
+    <section id="panel-waitlist" class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Waitlist</h2>
+          <p class="sub">Quote time is stamped automatically when a party is added.</p>
+        </div>
+      </div>
+
+      <div class="wait-stats" id="wait-stats"></div>
+
+      <div class="card">
+        <h3>Add Party</h3>
+        <form id="wait-form" autocomplete="off">
+          <div class="field-row">
+            <div class="field">
+              <label for="wait-name">Name</label>
+              <input type="text" id="wait-name" placeholder="Guest name" />
+            </div>
+            <div class="field">
+              <label for="wait-phone">Phone</label>
+              <input type="tel" id="wait-phone" placeholder="(607) 555-0134" />
+            </div>
+            <div class="field field-narrow">
+              <label for="wait-party">Party Size</label>
+              <input type="number" id="wait-party" min="1" step="1" value="2" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="wait-notes">Notes</label>
+            <input type="text" id="wait-notes" placeholder="Booth if possible, high chair, celebrating…" />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Add to Waitlist</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="wait-list"></div>
+    </section>
+  </main>
+
+  <div id="modal-overlay" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2 id="modal-title">Title</h2>
+        <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
