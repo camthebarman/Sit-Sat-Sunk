@@ -15,12 +15,18 @@
     }
   }
 
-  // The theme actually in effect right now: an explicit user choice if one is
-  // stored, otherwise whatever the OS/browser prefers.
+  // A theme already stamped on the document by whatever is hosting the page.
+  function hostTheme() {
+    var attr = document.documentElement.getAttribute("data-theme");
+    return attr === "dark" || attr === "light" ? attr : null;
+  }
+
+  // The theme actually in effect right now: this app's own stored choice first,
+  // then a theme the host has already stamped, then whatever the OS prefers.
   function effective() {
     var stored = getStored();
     if (stored === "dark" || stored === "light") return stored;
-    return systemPrefersDark() ? "dark" : "light";
+    return hostTheme() || (systemPrefersDark() ? "dark" : "light");
   }
 
   function apply(theme) {
