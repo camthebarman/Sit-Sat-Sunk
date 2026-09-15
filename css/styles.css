@@ -545,6 +545,8 @@ p { margin: 0 0 .6em; }
   font-size: 13.5px;
   box-shadow: var(--shadow);
   z-index: 200;
+  /* Purely informational: it must never eat a tap meant for the floor beneath it. */
+  pointer-events: none;
 }
 
 /* ---------- seat-from-waitlist picker ---------- */

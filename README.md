@@ -37,8 +37,9 @@ replaced with the `actions/deploy-pages` one the other apps use.
   back to *clean*, which also banks the turn as "Last turn: 42 min". Flipping to
   *dirty* leaves the clock running — the table isn't turned until it's bussed and
   reset, and that wait is worth seeing.
-- Clearing a table drops its guest count but keeps its notes, since notes tend to
-  describe the table ("wobbly leg") rather than the party.
+- Clearing a single table mid-service drops its guest count but keeps its notes,
+  since a note left on one table usually describes the table ("wobbly leg")
+  rather than the party. The end-of-shift **Clear All** wipes notes too.
 
 ## Waitlist
 
@@ -58,12 +59,25 @@ replaced with the `actions/deploy-pages` one the other apps use.
 - A party seated this way is shown by name in the table's panel, separate from
   the table's own notes, and is cleared when the table goes back to clean.
 
+## Friday Night
+
+A first visit opens on a busy Friday service rather than an empty room, so the
+app shows what it does before anyone has touched it: 13 tables seated across
+the dining room with timers from four minutes to over an hour, three waiting to
+be bussed, a full bar rail, and seven parties on the waitlist quoted between two
+and thirty-eight minutes ago. Times are relative to when it loads, so every
+clock is live.
+
+The **Friday Night** button reloads that service at any time — useful for
+showing someone the app. It asks first, since it replaces what is on the floor,
+and it leaves table positions alone.
+
 ## Clear All
 
 The **Clear All** button in the header is the end-of-shift reset. It empties the
 waitlist and hands every table on both layouts back clean, clearing guest counts
-and running timers along with any seated party's details. Table positions and
-table notes are left alone, so the room
+and running timers, notes and any seated party's details. Table positions are
+left alone, so the room
 doesn't have to be rebuilt tomorrow.
 
 ## Files
@@ -73,5 +87,6 @@ doesn't have to be rebuilt tomorrow.
 | `index.html` | Page structure: header, tabs, floor plan, waitlist, modal |
 | `css/styles.css` | All styling, including light/dark tokens and table shapes |
 | `js/theme.js` | Dark mode, loaded in `<head>` so there's no flash of the wrong theme |
+| `js/demo.js` | The Friday-night service: table statuses, notes and the waitlist |
 | `js/storage.js` | State shape, seeded layouts, `localStorage` load/save |
 | `js/app.js` | Rendering, dragging, status cycling, timers, event wiring |

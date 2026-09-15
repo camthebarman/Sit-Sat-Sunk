@@ -95,13 +95,18 @@ const Storage = (function () {
     { id: "bar", label: "Bar", seed: seedBar },
   ];
 
+  // A first visit opens on a busy Friday night rather than an empty room, so
+  // the app shows what it does before anyone has touched it. Clear All is the
+  // one tap to an empty floor for a real shift.
   function defaultState() {
-    return {
+    const state = {
       version: SEED_VERSION,
       activeLayout: "dining",
       layouts: { dining: seedDining(), bar: seedBar() },
       waitlist: [],
     };
+    if (typeof Demo !== "undefined") Demo.apply(state);
+    return state;
   }
 
   function fixtures(layoutId) {
@@ -152,16 +157,19 @@ const Storage = (function () {
     }
   }
 
-  // End of shift: empty the waitlist and hand every table back clean, but
-  // leave positions alone — the room was arranged once to match the real
-  // floor and shouldn't have to be rebuilt tomorrow. Table notes survive too,
-  // since they tend to describe the table ("wobbly leg"), not the party.
+  // End of shift: empty the waitlist and hand every table back clean, notes
+  // included — "Birthday at 9" must not greet tomorrow's host. A single table
+  // flipping back to clean mid-service keeps its note, since that one is
+  // usually about the table itself ("wobbly leg"); this is the full reset.
+  // Positions are the exception: the room was arranged once to match the real
+  // floor and shouldn't have to be rebuilt tomorrow.
   function clearShift(state) {
     state.waitlist = [];
     LAYOUTS.forEach((layout) => {
       (state.layouts[layout.id] || []).forEach((table) => {
         table.status = "clean";
         table.guests = 0;
+        table.notes = "";
         table.party = null;
         table.seatedAt = null;
         table.lastTurnMs = null;

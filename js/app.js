@@ -530,8 +530,8 @@ const App = (function () {
   // ---------- shift reset ----------
   function confirmClearAll() {
     openModal("Clear all for end of shift?", (body, close) => {
-      body.appendChild(el("p", {}, ["This empties the waitlist and hands every table back clean — guest counts and running timers are cleared on both layouts."]));
-      body.appendChild(el("p", { class: "muted" }, ["Table positions and table notes stay exactly as they are."]));
+      body.appendChild(el("p", {}, ["This empties the waitlist and hands every table back clean on both layouts, clearing guest counts, notes and running timers."]));
+      body.appendChild(el("p", { class: "muted" }, ["Table positions stay exactly as you have them."]));
       body.appendChild(el("div", { class: "form-actions" }, [
         el("button", { class: "btn btn-ghost", onclick: close }, ["Cancel"]),
         el("button", {
@@ -546,6 +546,29 @@ const App = (function () {
             toast("Shift cleared");
           },
         }, ["Clear Everything"]),
+      ]));
+    });
+  }
+
+  function confirmDemo() {
+    openModal("Load a Friday night?", (body, close) => {
+      body.appendChild(el("p", {}, ["This fills both layouts with a busy Friday service and a waitlist of parties, replacing whatever is on the floor now."]));
+      body.appendChild(el("p", { class: "muted" }, ["Table positions are left exactly as you have them."]));
+      body.appendChild(el("div", { class: "form-actions" }, [
+        el("button", { class: "btn btn-ghost", onclick: close }, ["Cancel"]),
+        el("button", {
+          class: "btn btn-primary",
+          onclick: () => {
+            Demo.apply(state);
+            selectedId = null;
+            setArranging(false);
+            persist();
+            renderFloor();
+            renderWaitlist();
+            close();
+            toast("Friday night loaded");
+          },
+        }, ["Load Friday Night"]),
       ]));
     });
   }
@@ -613,6 +636,7 @@ const App = (function () {
       toast(`${layoutLabel(state.activeLayout)} positions reset`);
     });
 
+    $("#btn-demo").addEventListener("click", confirmDemo);
     $("#btn-clear-all").addEventListener("click", confirmClearAll);
 
     $("#btn-theme-toggle").addEventListener("click", () => { Theme.toggle(); syncThemeButton(); });
